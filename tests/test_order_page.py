@@ -1,6 +1,5 @@
 # tests/test_order_page.py
 import allure
-import pytest
 from data import order_data
 from urls import BASE_URL
 from pages.main_page import Main_Page
@@ -12,7 +11,6 @@ class TestOrderPage:
     
     @allure.title("Позитивный сценарий заказа - кнопка вверху")
     @allure.description("Проверка заказа через кнопку вверху страницы")
-                                                      
     def test_order_scooter_top_button(self, driver):
         main_page = Main_Page(driver)
         main_page.go_to_url(BASE_URL)
@@ -37,17 +35,9 @@ class TestOrderPage:
         order_page.confirm_order()
         
         assert order_page.check_order_success(), "Заказ не оформлен"
-        order_page.close_success_popup()
-
-                                                   
-        nav = ExternalNavigation(driver)
-        nav.click_scooter_logo()
-        assert "Самокат" in nav.check_scooter_page(), "Не перешли на главную"
-         
     
     @allure.title("Позитивный сценарий заказа - кнопка внизу")
     @allure.description("Проверка заказа через кнопку внизу страницы")
-                                                           
     def test_order_scooter_bottom_button(self, driver):
         main_page = Main_Page(driver)
         main_page.go_to_url(BASE_URL)
@@ -70,9 +60,21 @@ class TestOrderPage:
             order_data[1]["comment"]
         )
         order_page.confirm_order()
-        
         assert order_page.check_order_success(), "Заказ не оформлен"
-        order_page.close_success_popup()
+    
+    @allure.title("Проверка перехода на главную по логотипу Самоката")
+    @allure.description("Клик на логотип Самоката ведет на главную страницу")
+    def test_scooter_logo_redirect(self, driver):
+        main_page = Main_Page(driver)
+        main_page.go_to_url(BASE_URL)
+        main_page.accept_cookies()
+
+        order_page = OrderPage(driver)
+        order_page.click_order_button_top()
+    
+        nav = ExternalNavigation(driver)
+        nav.click_scooter_logo()
+        assert "Самокат" in nav.check_scooter_page(), "Не перешли на главную"
     
     @allure.title("Проверка перехода на Яндекс по логотипу")
     @allure.description("Клик на логотип Яндекса открывает Яндекс в новом окне")
